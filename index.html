@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="skrypt.js" defer></script>
+</head>
+<body>
+    <div class="title">
+        TicTacToe
+    </div>
+    <div class="tura"> Game not started </div>
+    <div class="gameBoard">
+        <div class="tile" id="0" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="1" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="2" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="3" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="4" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="5" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="6" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="7" onclick="clickTile(this)">
+            
+        </div>
+        <div class="tile" id="8" onclick="clickTile(this)">
+            
+        </div>
+    </div>
+    <form name="newGameForm" class = "newGame" method="POST">
+            <select name="opponentType" onchange="displayPlayer2()">
+                <option value="simple AI">simple AI </option>
+                <option value="hard AI"> hard AI </option> 
+                <option value="Player"> Player</option>
+            </select>
+            <div class="playerNames">
+                <div>
+                    <label for="player1name">Name of player1</label>
+                    <input placeholder="Player 1 name" name="player1name">
+                    </div>
+                    <div id="Player2">
+                    <label for="player2name">Name of player2</label>
+                    <input placeholder="Player 2 name" name="player2name">  
+                </div>
+            </div>
+       
+        <input type="submit" value="newGame" class="button">
+    </form>
+</body>
+</html>
