@@ -46,18 +46,27 @@ function newGame(e) {
     } else if (formProps["opponentType"] == "Player") {
         player1.name = formProps["player1name"];
         player2.name = formProps["player2name"];
-       
+
     }
     newGameParent.removeChild(newGameContainer);
     isGameOver = false;
 }
 
 function displayPlayer2() {
-    if (document.querySelector("#Player2") == null) {
-        playerNamesContainer.appendChild(player2Container);
+    if (document.querySelector("#selectOpponent").value == "Player") {
+        if(document.querySelector("#Player2") == null)
+        {
+            playerNamesContainer.appendChild(player2Container);
+        }
+        
     } else {
-        playerNamesContainer.removeChild(player2Container);
+        if(document.querySelector("#Player2") != null)
+        {
+            playerNamesContainer.removeChild(player2Container);
+        }
+        
     }
+   // document.querySelector("#Player2") == null
 }
 
 function newPlayer(name, symbol) {
@@ -67,7 +76,7 @@ function newPlayer(name, symbol) {
 
 function gameOver(results) {
     console.log("Won ", results);
-    isGameOver=true;
+    isGameOver = true;
     turnIndicator.textContent = results + " won";
 
     newGameParent.appendChild(newGameContainer);
@@ -127,38 +136,102 @@ function checkForWins() {
 }
 
 function renderBoard() {
-   
+
     for (let i = 0; i < 9; i++) {
         let currentTile = document.getElementById(i);
         currentTile.textContent = allTiles[i];
     }
 }
 
-function randomNumber(max)
-{
-    return Math.floor(Math.random()*max);
+function randomNumber(max) {
+    return Math.floor(Math.random() * max);
 }
-function simpleAImove()
+function compare(a, b)
 {
+    return a>b;
+}
+function simpleAImove() {
     let unusedTiles = [];
-    for(let i=0;i<allTiles.length;i++)
-    {
-        if(allTiles[i]=="")
-        {
+    for (let i = 0; i < allTiles.length; i++) {
+        if (allTiles[i] == "") {
             unusedTiles.push(i);
         }
     }
     console.log(unusedTiles);
 
-    let clickID = unusedTiles[randomNumber(unusedTiles.length-1)];
+    let clickID = unusedTiles[randomNumber(unusedTiles.length - 1)];
     console.log(clickID);
     let tileReference = document.getElementById(clickID);
     clickTile(tileReference);
 }
 
-function hardAImove()
-{
+function hardAImove() {
+    let tilePoints = [];
+    for (let i = 0; i < 9; i++) {
+        tilePoints.push(0);
+    }
+    for(let i=0;i<9;i++)
+    {
+        if(allTiles[i]=="")
+        {
+            tilePoints[i]+=1;
+        }
+    }
+    for (let j = 0; j < 3; j++) {
+        //sprawdzanie, czy rzad jest pusty lub jego:
+        let counter = 0;
+        for (let i = 0; i < 3; i++) {
+            if (allTiles[i + 3 * j] == ""||allTiles[i + 3 * j] == player2.symbol) {
+                counter++;
+            }
+
+
+        }
+        if (counter == 3) {
+            for (let i = 0; i < 3; i++) {
+                tilePoints[i + 3 * j] += 1;
+            }
+        }
+    }
+    //columns
+    for (let j = 0; j < 3; j++) {
+
+        let counter = 0;
+
+        for (let i = j; i < 9; i += 3) {
+            if (allTiles[i] == "" ||allTiles[i] == player2.symbol) {
+                counter++;
+
+            }
+
+        }
+        if(counter==3)
+        {
+            for (let i = j; i < 9; i += 3) {
+                tilePoints[i]+=1;
     
+            }
+        }
+    }
+    //ukosy: 0, 4, 8 oraz 2, 4, 6
+    if ((allTiles[0] == "" || allTiles[0] == player2.symbol)&& (allTiles[4] == ""|| allTiles[4] == player2.symbol) && (allTiles[8] == ""|| allTiles[8] == player2.symbol)) {
+        tilePoints[0]+=1;
+        tilePoints[4]+=1;
+        tilePoints[8]+=1;
+    }
+    if ((allTiles[2] == ""|| allTiles[2] == player2.symbol) && (allTiles[4] == ""|| allTiles[4] == player2.symbol) && (allTiles[6] == ""|| allTiles[6] == player2.symbol)) {
+        tilePoints[2]+=1;
+        tilePoints[4]+=1;
+        tilePoints[6]+=1;
+    }
+    let maximum =  Math.max(...tilePoints);
+    let tileID = tilePoints.indexOf(maximum);
+    console.log("max", maximum);
+    console.log(tileID);
+    console.log(tilePoints);
+    let tileReference = document.getElementById(tileID);
+    clickTile(tileReference);
+
 }
 
 function clickTile(e) {
@@ -169,29 +242,24 @@ function clickTile(e) {
             checkForWins();
             if (turnOf == player1) {
                 turnOf = player2;
-                
-                if(!isGameOver)
-                {
-                    if(simpleAI)
-                    {
+
+                if (!isGameOver) {
+                    if (simpleAI) {
                         simpleAImove();
-                    }
-                    else if(hardAI)
-                    {
-    
+                    } else if (hardAI) {
+                        hardAImove();
                     }
                 }
-               
+
             } else {
                 turnOf = player1;
-               
+
             }
-            if(!isGameOver)
-            {
+            if (!isGameOver) {
                 turnIndicator.textContent = turnString + turnOf.name;
             }
-           // renderTurnIndicator();
-           
+            // renderTurnIndicator();
+
         }
     }
 
