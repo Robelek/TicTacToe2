@@ -1,8 +1,15 @@
+/*
+    wez to napraw, zeby czekalo na koniec tury, bo to niesmieszne jest
+
+*/
+
+
 let allTiles = [];
 let turnIndicator = document.querySelector(".tura");
 let turnString = "Turn of player: ";
 
 let isGameOver = 1;
+let canMove = 0;
 let newGameContainer = document.querySelector(".newGame");
 let newGameParent = newGameContainer.parentElement;
 let player2Container = document.querySelector("#Player2");
@@ -48,8 +55,11 @@ function newGame(e) {
         player2.name = formProps["player2name"];
 
     }
+    turnOf=player1;
+    turnIndicator.textContent = turnString + turnOf.name;
     newGameParent.removeChild(newGameContainer);
     isGameOver = false;
+    canMove = true;
 }
 
 function displayPlayer2() {
@@ -128,10 +138,10 @@ function checkForWins() {
     }
     sym = player2.symbol;
     if (allTiles[0] == sym && allTiles[4] == sym && allTiles[8] == sym) {
-        gameOver(player1.name);
+        gameOver(player2.name);
     }
     if (allTiles[2] == sym && allTiles[4] == sym && allTiles[6] == sym) {
-        gameOver(player1.name);
+        gameOver(player2.name);
     }
 }
 
@@ -162,21 +172,17 @@ function simpleAImove() {
     let clickID = unusedTiles[randomNumber(unusedTiles.length - 1)];
     console.log(clickID);
     let tileReference = document.getElementById(clickID);
+    canMove=true;
     clickTile(tileReference);
+    
 }
 
 function hardAImove() {
     let tilePoints = [];
     for (let i = 0; i < 9; i++) {
-        tilePoints.push(0);
+        tilePoints.push(1);
     }
-    for(let i=0;i<9;i++)
-    {
-        if(allTiles[i]=="")
-        {
-            tilePoints[i]+=1;
-        }
-    }
+    
     for (let j = 0; j < 3; j++) {
         //sprawdzanie, czy rzad jest pusty lub jego:
         let counter = 0;
@@ -224,18 +230,26 @@ function hardAImove() {
         tilePoints[4]+=1;
         tilePoints[6]+=1;
     }
+    for(let i=0;i<9;i++)
+    {
+        if(allTiles[i]!="")
+        {
+            tilePoints[i]=0;
+        }
+    }
     let maximum =  Math.max(...tilePoints);
     let tileID = tilePoints.indexOf(maximum);
     console.log("max", maximum);
     console.log(tileID);
     console.log(tilePoints);
     let tileReference = document.getElementById(tileID);
+    canMove=true;
     clickTile(tileReference);
 
 }
 
 function clickTile(e) {
-    if (!isGameOver) {
+    if (!isGameOver&&canMove) {
         if (allTiles[e.id] == "") {
             allTiles[e.id] = turnOf.symbol;
             renderBoard();
@@ -244,6 +258,7 @@ function clickTile(e) {
                 turnOf = player2;
 
                 if (!isGameOver) {
+                    canMove=false;
                     if (simpleAI) {
                         simpleAImove();
                     } else if (hardAI) {
@@ -255,6 +270,7 @@ function clickTile(e) {
                 turnOf = player1;
 
             }
+            
             if (!isGameOver) {
                 turnIndicator.textContent = turnString + turnOf.name;
             }
